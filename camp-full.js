@@ -1,0 +1,14 @@
+async function init(){const canvasTag=document.createElement('canvas');canvasTag.id="renderCanvas";document.body.appendChild(canvasTag);if(!navigator.gpu){throw Error("WebGPU is not supported in this browser.");}
+const adapter=await navigator.gpu.requestAdapter();if(!adapter){throw Error("Couldn't request WebGPU adapter.");}
+const device=await adapter.requestDevice();const context=canvasTag.getContext("webgpu");const canvasFormat=navigator.gpu.getPreferredCanvasFormat();context.configure({device:device,format:canvasFormat,});const encoder=device.createCommandEncoder();const pass=encoder.beginRenderPass({colorAttachments:[{view:context.getCurrentTexture().createView(),clearValue:{r:0,g:56/255,b:101/255,a:1},loadOp:"clear",storeOp:"store",}]});var vertCode=`
+    @vertex // this compute the scene coordinate of each input vertex
+    fn vertexMain(@location(0) pos: vec2f) -> @builtin(position) vec4f {
+      return vec4f(pos, 0, 1); // (pos, Z, W) = (X, Y, Z, W)
+    }
+    `;var fragCode=`
+    @fragment // this compute the color of each pixel
+    fn fragmentMain() -> @location(0) vec4f {
+      return vec4f(0, 0, 0, 1); // (R, G, B, A)
+    }
+    `;var shaderModule=device.createShaderModule({label:"Shader",code:vertCode+'\n'+fragCode,});var vertices=new Float32Array([.3,.6,.2,0,.4,0,.3,.6,.4,0,.9,.1,.3,.6,.9,.1,.65,.65,0,-.1,.05,-.1,.025,.1,-0.06,-.1,0.0,-0.1,-0.03,0.1,-0.02,-0.08,0.02,-0.08,0.0,0.08,.02,-.1,.07,-.1,.045,.05,-.065,-.1,.07,-.1,.07,-.2,-.065,-.1,.07,-.2,-.065,-.2,-.7,-.5,-.6,-.5,-.7,.5,-.6,-.5,-.7,.5,-.6,.5,-.8,.4,-.5,.4,-.65,.7,-.8,.2,-.5,.2,-.65,.5,-.8,0,-.5,0,-.65,.3]);var vertexBuffer=device.createBuffer({label:"Vertices",size:vertices.byteLength,usage:GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST,});console.log("beans");device.queue.writeBuffer(vertexBuffer,0,vertices);var vertexBufferLayout={arrayStride:2*Float32Array.BYTES_PER_ELEMENT,attributes:[{format:"float32x2",offset:0,shaderLocation:0,}],};var renderPipeline=device.createRenderPipeline({label:"Render Pipeline",layout:"auto",vertex:{module:shaderModule,entryPoint:"vertexMain",buffers:[vertexBufferLayout]},fragment:{module:shaderModule,entryPoint:"fragmentMain",targets:[{format:canvasFormat}]}});pass.setPipeline(renderPipeline);pass.setVertexBuffer(0,vertexBuffer);pass.draw(vertices.length/2);pass.end();const commandBuffer=encoder.finish();device.queue.submit([commandBuffer]);return context;}
+init().then(ret=>{console.log(ret);}).catch(error=>{const pTag=document.createElement('p');pTag.innerHTML=navigator.userAgent+"</br>"+error.message;document.body.appendChild(pTag);document.getElementById("renderCanvas").remove();});
