@@ -22,53 +22,20 @@
  *                                measures that legally restrict others from doing
  *                                anything the license permits.
 -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Home Page</title>
+<html>
+  <head>
+    <title>Quest 6 Starter</title>
+    <!-- Note that some header tags don't need a close tag. They don't have content, called "void" tags. -->
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!-- Import CSS uisng the link tag -->
     <link rel="stylesheet" type="text/css" href="./style/assignment.css">
+    <!-- Webpage icon -->
     <link rel="icon" href="./assets/me.ico" type="image/x-icon">
-    <style>
-        /* Basic button styling */
-        .nav-button {
-            display: block;           /* Makes them stack vertically */
-            margin: 10px auto;        /* Adds space between buttons and centers */
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #4CAF50; /* Green color */
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            text-align: center;
-            text-decoration: none;     /* Removes underline from links */
-            width: 200px;              /* Optional: set button width */
-        }
-
-        .nav-button:hover {
-            background-color: #45a049;
-        }
-
-        .button-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
-
-<div class="button-container">
-    <a href="quest2-starter.html" class="nav-button">Explore Space</a>
-    <a href="quest3-starter.html" class="nav-button">Game of Life</a>
-    <a href="quest4-starter.html" class="nav-button">Wind Simulation</a>
-    <a href="quest5-starter.html" class="nav-button">2D collision Detection</a>
-    <a href="quest6-starter.html" class="nav-button">3D Ray Tracing</a>
-</div>
-
-</body>
+    <!-- Include the web app script -->
+    <script type="module" src="quest6-starter.js"></script>
+  </head>
+  <body>
+  </body>
 </html>
