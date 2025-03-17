@@ -75,10 +75,16 @@ async function init() {
   var fpsText = new StandardTextObject('fps: ' + fps + "\ngpu result: " + gpu_result + "\ncpu tree result: " + tree_result);
 
   lastCalled = Date.now();
+  var frames = 1000 / 75.0;
+  var count = 0;
   renderFrame();
   setInterval(() => { 
     fpsText.updateText('fps: ' + frameCnt + "\ngpu result: " + gpu_result + "\ncpu tree result: " + tree_result);
-    frameCnt = 0;
+    count++;
+    if (count > frames){
+      frameCnt = 0;
+      count = 0;
+    }
   }, 75); // call every 1000 ms
 
 
