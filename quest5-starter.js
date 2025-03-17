@@ -45,7 +45,7 @@ async function init() {
   // await renderer.appendSceneObject(circle);
   // await renderer.appendSceneObject(dense);
   let fps = '??';
-  var fpsText = new StandardTextObject('fps: ' + fps + "\nsee console for tree and gpu collision detection");
+  
   
   // run animation at 60 fps
   var frameCnt = 0;
@@ -69,20 +69,24 @@ async function init() {
     mouseY = (-e.clientY / window.innerHeight) * 2 + 1;
     
   });
+  var tree_result = false;
+  var gpu_result = false;
+
+  var fpsText = new StandardTextObject('fps: ' + fps + "\ngpu result: " + gpu_result + "\ncpu tree result: " + tree_result);
 
   lastCalled = Date.now();
   renderFrame();
   setInterval(() => { 
-    fpsText.updateText('fps: ' + frameCnt + "\nsee console for tree and gpu collision detection");
+    fpsText.updateText('fps: ' + frameCnt + "\ngpu result: " + gpu_result + "\ncpu tree result: " + tree_result);
     frameCnt = 0;
-  }, 1000); // call every 1000 ms
+  }, 75); // call every 1000 ms
 
 
   setInterval(async () => { 
     polygon.startTest(mouseX, mouseY);
     await sleep(75);
-    var tree_result = polygon._tree.testPointInside(mouseX, mouseY);
-    var gpu_result = await polygon.read_stagebuffer();
+    tree_result = polygon._tree.testPointInside(mouseX, mouseY);
+    gpu_result = await polygon.read_stagebuffer();
     console.log("gpu result: " + gpu_result, ", cpu tree result: " + tree_result);
   }, 90); // call every 1000 ms
   return renderer;
